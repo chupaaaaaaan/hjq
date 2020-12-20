@@ -4,8 +4,8 @@ module Data.Hjq.Query where
 
 import Control.Monad
 import Control.Lens.Operators
--- import qualified Data.Vector as V
--- import qualified Data.HashMap.Strict as H
+import qualified Data.Vector as V
+import qualified Data.HashMap.Strict as H
 import Data.Hjq.Parser
 import Data.Aeson
 import Data.Aeson.Lens
@@ -23,11 +23,12 @@ noteOutOfRangeError :: Int -> Maybe a -> Either Text a
 noteOutOfRangeError _ (Just x) = Right x
 noteOutOfRangeError s Nothing = Left $ "out of range :" <> tshow s
 
--- executeQuery :: JqQuery -> Value -> Either Text Value
--- executeQuery (JqQueryObject o) =
-
-
-
+executeQuery :: JqQuery -> Value -> Either Text Value
+-- executeQuery (JqQueryObject o) v = Object . H.fromList <$> mapM (mapM (`executeQuery` v)) o
+executeQuery (JqQueryObject o) v = fmap (Object . H.fromList) . sequence . fmap sequence $ fmap (fmap $ flip executeQuery v) o
+-- executeQuery (JqQueryArray l) v = Array . V.fromList <$> mapM (`executeQuery` v) l
+executeQuery (JqQueryArray l) v = fmap (Array . V.fromList) . sequence $ fmap (flip executeQuery v) l
+executeQuery (JqQueryFilter f) v = applyFilter f v
 
 tshow :: Show a => a -> Text
 tshow = pack . show

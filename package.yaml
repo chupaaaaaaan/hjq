@@ -28,6 +28,9 @@ dependencies:
 - lens-aeson
 - vector
 - unordered-containers
+- bytestring
+- errors
+- aeson-pretty
 
 library:
   source-dirs: src

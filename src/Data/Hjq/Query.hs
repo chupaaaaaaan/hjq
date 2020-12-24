@@ -32,4 +32,3 @@ executeQuery (JqQueryFilter f) v = applyFilter f v
 
 tshow :: Show a => a -> Text
 tshow = pack . show
-ｖ
